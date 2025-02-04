@@ -1,4 +1,4 @@
-# Lab 3
+# Lab 2
 
 **Talha Ayyaz**
 **2023-EE-174**

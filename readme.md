@@ -5,4 +5,4 @@
 
 ## Labs Done
 
-- [Lab 3](./Lab-3/readme.md)
+- [Lab 2](./Lab-2/readme.md)
