@@ -4,7 +4,7 @@
 // Engineer: Muhammad Talha Ayyaz
 // 
 // Create Date: 01/28/2025 10:40:50 AM
-// Design Name: LAB 2
+// Design Name: LAB 3
 // Target Devices: Nexys A7-100T
 //////////////////////////////////////////////////////////////////////////////////
 
