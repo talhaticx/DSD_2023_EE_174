@@ -183,3 +183,5 @@ it matches the exact output of the truth table
 The Logic Gate Diagram of this circuit is given in
 
 [Diagram](/Lab-2/docs/task2.drawio)
+
+![Diagram](/Lab-2/docs/task2_diagram.png)
