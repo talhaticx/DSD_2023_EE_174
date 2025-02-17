@@ -14,7 +14,7 @@ module lab4(
     assign red = (~b1 & (~b2 | a2)) | (a1 & (a2 | ~b1 | ~b2));
 
     // Green LED Logic
-    assign green = (~a1 & (b2 | b1 | ~a2)) | (b1 & (~b2 | a2));
+    assign green = (~a1 & (b2 | b1 | ~a2)) | (b1 & (b2 | ~a2));
 
     // Blue LED Logic
     assign blue = (a1 ^ b1) | (a2 ^ b2);
