@@ -1,57 +1,37 @@
 `timescale 1ns / 1ps
 
 module lab4_tb;
-  logic a1, a2, b1, b2;
-  logic red, green, blue;
+    // Testbench signals
+    logic a1, a2, b1, b2;
+    logic red, green, blue;
 
-  // Instantiate the DUT (Device Under Test)
-  lab4 dut (
-    .a1(a1), .a2(a2),
-    .b1(b1), .b2(b2),
-    .red(red), .green(green), .blue(blue)
-  );
+    // Instantiate the DUT (Device Under Test)
+    lab4 dut (
+        .a1(a1), .a2(a2),
+        .b1(b1), .b2(b2),
+        .red(red), .green(green), .blue(blue)
+    );
 
-  // Driver Task: Generates Inputs
-  task driver(input logic [1:0] a, input logic [1:0] b);
-    {a1, a2} = a;  
-    {b1, b2} = b;
-  endtask
+    // Driver: Applies stimulus to DUT
+    task driver(input int i);
+        {a1, a2, b1, b2} = i;  // Apply input
+        #10;                   // Wait for DUT response
+    endtask
 
-  // Monitor Task: Checks Outputs
-  task monitor();
-    #1;
-    $display("Input: A=%b B=%b | Output: R=%b G=%b B=%b", {a1, a2}, {b1, b2}, red, green, blue);
-  endtask
+    // Monitor: Observes and prints output
+    task monitor;
+        $display("%b  %b  %b  %b  |  %b    %b    %b", a1, a2, b1, b2, red, green, blue);
+    endtask
 
-  // Directed Test: Specific Values from the Truth Table
-  task directed_test();
-    logic [1:0] test_a, test_b;
-    for (test_a = 0; test_a < 4; test_a++) begin
-      for (test_b = 0; test_b < 4; test_b++) begin
-        driver(test_a, test_b);
-        #5; 
-        monitor();
-      end
+    // Testbench process
+    initial begin
+        $display("A1 A2 B1 B2 | RED GREEN BLUE");
+
+        for (int i = 0; i < 16; i++) begin
+            driver(i);  // Apply input
+            monitor();  // Capture output
+        end
+
+        $finish;
     end
-  endtask
-
-  // Random Test: Generate Random Inputs
-  task random_test();
-    repeat (10) begin
-      driver($random % 4, $random % 4);
-      #5;
-      monitor();
-    end
-  endtask
-
-  // Run Testbench
-  initial begin
-    $display("=== Directed Test ===");
-    directed_test();
-
-    $display("\n=== Random Test ===");
-    random_test();
-
-    $finish;
-  end
 endmodule
