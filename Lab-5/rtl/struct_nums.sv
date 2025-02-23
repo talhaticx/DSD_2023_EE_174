@@ -23,6 +23,7 @@ module struct_nums (
     wire n1 = nums[0];    // LSB
 
     // Implementing each boolean equation using continuous assignments
+wire n1_not, n2_not, n3_not, n4_not;
 
     not (n1_not, n1);
     not (n2_not, n2);
