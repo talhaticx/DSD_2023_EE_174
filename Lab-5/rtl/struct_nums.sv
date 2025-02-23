@@ -17,13 +17,13 @@ module struct_nums (
 );
 
     // For better readability, create wire aliases for the inputs
-    wire n4 = nums[3];    // MSB
-    wire n3 = nums[2];
-    wire n2 = nums[1];
-    wire n1 = nums[0];    // LSB
+    wire n1 = nums[3];    // MSB
+    wire n2 = nums[2];
+    wire n3 = nums[1];
+    wire n4 = nums[0];    // LSB
 
     // Implementing each boolean equation using continuous assignments
-wire n1_not, n2_not, n3_not, n4_not;
+    wire n1_not, n2_not, n3_not, n4_not;
 
     not (n1_not, n1);
     not (n2_not, n2);
