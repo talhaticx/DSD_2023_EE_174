@@ -10,7 +10,7 @@
 //     ---
 //      d
 
-module struct_nums (
+module beh_nums (
     input logic [3:0] nums,   // 4-bit input bus
     output logic a, b, c, d, e, f, g
 );

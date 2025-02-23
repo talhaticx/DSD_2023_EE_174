@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module lab5_tb();
-    // Test signals for struct_nums
+    // Test signals for beh_nums
     logic [3:0] nums;
     logic a, b, c, d, e, f, g;
     
@@ -14,7 +14,7 @@ module lab5_tb();
     integer selector_errors = 0;
     
     // Instantiate both modules separately for clear testing
-    struct_nums seven_seg_dut (
+    beh_nums seven_seg_dut (
         .nums(nums),
         .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g)
     );

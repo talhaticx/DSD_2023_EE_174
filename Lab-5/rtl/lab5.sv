@@ -6,7 +6,7 @@ module lab5(
 );
 
     // Instantiate the seven segment decoder module
-    struct_nums seven_seg_decoder (
+    beh_nums seven_seg_decoder (
         .nums(nums),
         .a(a),
         .b(b),
