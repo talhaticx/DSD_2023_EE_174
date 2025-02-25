@@ -18,7 +18,7 @@ module lab5(
     );
 
     // Instantiate the display selector module
-    sel display_selector (
+    beh_sel display_selector (
         .sel(sel),
         .AN0(AN0),
         .AN1(AN1),

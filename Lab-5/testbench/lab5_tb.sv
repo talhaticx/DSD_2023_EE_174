@@ -19,7 +19,7 @@ module lab5_tb();
         .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g)
     );
     
-    sel selector_dut (
+    beh_sel selector_dut (
         .sel(sel),
         .AN0(AN0), .AN1(AN1), .AN2(AN2), .AN3(AN3),
         .AN4(AN4), .AN5(AN5), .AN6(AN6), .AN7(AN7)
@@ -65,7 +65,6 @@ module lab5_tb();
                 $display("FAILED");
                 $display("Expected: %b", expected);
                 $display("Actual:   %b", actual);
-                $display("For segments a,b,c,d,e,f,g respectively");
                 seven_seg_errors++;
             end else begin
                 $display("PASSED");
@@ -73,7 +72,21 @@ module lab5_tb();
         end
     endtask
     
-    // Test the display selector (AN outputs are already active low)
+    // Expected output for selector based on the truth table
+    function [7:0] get_expected_selector(input [2:0] s);
+        case (s)
+            3'b000: return 8'b11111110;
+            3'b001: return 8'b11111101;
+            3'b010: return 8'b11111011;
+            3'b011: return 8'b11110111;
+            3'b100: return 8'b11101111;
+            3'b101: return 8'b11011111;
+            3'b110: return 8'b10111111;
+            3'b111: return 8'b01111111;
+        endcase
+    endfunction
+    
+    // Test the display selector
     task test_selector();
         automatic logic [7:0] expected;
         automatic logic [7:0] actual;
@@ -83,11 +96,10 @@ module lab5_tb();
             sel = i[2:0];
             #10;
             
-            // Create expected pattern - only one AN should be 0, rest 1
-            expected = ~(8'b1 << i);
-            actual = {AN7,AN6,AN5,AN4,AN3,AN2,AN1,AN0};
+            expected = get_expected_selector(sel);
+            actual = {AN7, AN6, AN5, AN4, AN3, AN2, AN1, AN0};
             
-            $write("Testing selector %0d: ", i);
+            $write("Testing sel %b: ", sel);
             if (actual !== expected) begin
                 $display("FAILED");
                 $display("Expected: %b", expected);
@@ -99,7 +111,6 @@ module lab5_tb();
         end
     endtask
     
-    // Run all tests
     initial begin
         // Initialize inputs
         nums = 4'b0000;
