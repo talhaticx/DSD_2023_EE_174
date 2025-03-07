@@ -13,6 +13,8 @@ module lab6 (
     logic [7:0][3:0] stored_values;  // Stores 4-bit values for each 7-segment display
     logic [3:0] selected_num;        // Selected stored value for display
     logic [7:0] write_enable;        // Enables writing only when necessary
+    logic [3:0] displayed_num;
+    logic [7:0] an;
 
     // Instantiate sel module to get one-hot encoding for selection
     sel sel_decoder (
@@ -21,7 +23,10 @@ module lab6 (
     );
 
     // Generate write enable signals
-    assign write_enable = write & ~sel_output;
+    always @(posedge clk) begin
+        write_enable <= write ? ~sel_output : 8'b00000000; // No inversion needed
+    end
+    
 
     // Instantiate 8 D Flip-Flops for storage
     genvar i;
@@ -45,8 +50,7 @@ module lab6 (
     );
 
     // Only display stored values when write = 0
-    logic [3:0] displayed_num;
-    assign displayed_num = (write == 0) ? selected_num : 4'b1111; // Show nothing when write = 1
+    assign displayed_num = write ? 4'b1111 : selected_num;
 
     // Convert displayed 4-bit value to 7-segment output
     num num_decoder (
@@ -54,7 +58,8 @@ module lab6 (
         .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g) 
     );
 
+    assign an = write ? 8'b1111_1111 : sel_output;
     // Assign anode control signals from sel output
-    assign {an7, an6, an5, an4, an3, an2, an1, an0} = sel_output | write;
+    assign {an7, an6, an5, an4, an3, an2, an1, an0} = an;
 
 endmodule
