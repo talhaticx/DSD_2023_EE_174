@@ -110,8 +110,8 @@ module lab6_tb;
 
     // Test sequence
     initial begin
-        file = $fopen("lab6_tb_output.txt", "w");
-        $fdisplay(file, "|  Time  | sel | Expected Segment | Actual Segment | Expected Anodes | Actual Anodes | Result |");
+        file = $fopen("tb_result.txt", "w");
+        $fdisplay(file, "|  Time   | sel | Expected Segment | Actual Segment | Expected Anodes | Actual Anodes  | Result |");
 
         clk = 0;
         reset = 1;
