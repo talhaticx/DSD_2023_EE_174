@@ -25,6 +25,6 @@ set_property -dict { PACKAGE_PIN T18   IOSTANDARD LVCMOS33 } [get_ports { sel[1]
 set_property -dict { PACKAGE_PIN U18   IOSTANDARD LVCMOS33 } [get_ports { sel[2] }];
 
 set_property -dict { PACKAGE_PIN R13   IOSTANDARD LVCMOS33 } [get_ports { write }];
-set_property -dict { PACKAGE_PIN T8   IOSTANDARD LVCMOS33 } [get_ports { reset }];
+set_property -dict { PACKAGE_PIN T8   IOSTANDARD LVCMOS33 } [get_ports { rst }];
 
 set_property -dict { PACKAGE_PIN E3   IOSTANDARD LVCMOS33 } [get_ports { clk }];
