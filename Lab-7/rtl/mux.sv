@@ -1,4 +1,4 @@
-module mux (
+module mux8x1 (
     input  logic [7:0][3:0] num, // 8 inputs, each 4-bit
     input  logic [2:0] sel,      // 3-bit selector
     output logic [3:0] selected_num // 4-bit output
@@ -18,4 +18,14 @@ module mux (
         endcase
     end
 
+endmodule
+
+module mux2x1 (
+    // a is selected when w is 0
+    // b is selected when w is 1
+    input wire [2:0] a, b,
+    input wire w,
+    output wire [2:0]o
+);
+    assign o = (a & ~w) | (b & w);
 endmodule
