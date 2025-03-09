@@ -22,7 +22,7 @@ module lab7 (
     
     // Generate write enable signals
     always @(posedge clk) begin
-        write_enable <= write ? ~sel_output : 8'b00000000; // No inversion needed
+        write_enable <= write ? ~sel_output : 8'b00000000; // using ternary operator instead of AND gate 
     end
     
 

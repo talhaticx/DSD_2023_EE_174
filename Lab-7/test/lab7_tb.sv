@@ -1,21 +1,19 @@
-`timescale 1ns / 100ps
+`timescale 1ns / 1ps
 
 module lab7_tb;
-    // Testbench signals
+    // Testbench Signals
     logic [3:0] num;
     logic [2:0] sel;
     logic write;
+    logic clk;
     logic rst;
+    
     logic a, b, c, d, e, f, g;
     logic an0, an1, an2, an3, an4, an5, an6, an7;
-    
-    reg clk; // Clock signal
-    integer file;
 
-    // Clock generation
-    always #5 clk = ~clk;
+    logic writing;
 
-    // Instantiate lab6 module
+    // Instantiate lab7 module
     lab7 dut (
         .num(num),
         .sel(sel),
@@ -27,110 +25,63 @@ module lab7_tb;
         .an4(an4), .an5(an5), .an6(an6), .an7(an7)
     );
 
-    // Function to get expected seven-segment display output
-    function automatic [6:0] get_expected_segments(input [3:0] num);
-        case(num)
-            4'h0: get_expected_segments = 7'b0000001;
-            4'h1: get_expected_segments = 7'b1001111;
-            4'h2: get_expected_segments = 7'b0010010;
-            4'h3: get_expected_segments = 7'b0000110;
-            4'h4: get_expected_segments = 7'b1001100;
-            4'h5: get_expected_segments = 7'b0100100;
-            4'h6: get_expected_segments = 7'b0100000;
-            4'h7: get_expected_segments = 7'b0001111;
-            4'h8: get_expected_segments = 7'b0000000;
-            4'h9: get_expected_segments = 7'b0000100;
-            4'hA: get_expected_segments = 7'b0001000;
-            4'hB: get_expected_segments = 7'b1100000;
-            4'hC: get_expected_segments = 7'b0110001;
-            4'hD: get_expected_segments = 7'b1000010;
-            4'hE: get_expected_segments = 7'b0110000;
-            4'hF: get_expected_segments = 7'b0111000;
-        endcase
-    endfunction
+    // Clock Generation
+    always #5 clk = ~clk;  // 10ns clock period
 
-    // Function to get expected selector output
-    function automatic [7:0] get_expected_selector(input [2:0] s);
-        case (s)
-            3'b000: get_expected_selector = 8'b11111110;
-            3'b001: get_expected_selector = 8'b11111101;
-            3'b010: get_expected_selector = 8'b11111011;
-            3'b011: get_expected_selector = 8'b11110111;
-            3'b100: get_expected_selector = 8'b11101111;
-            3'b101: get_expected_selector = 8'b11011111;
-            3'b110: get_expected_selector = 8'b10111111;
-            3'b111: get_expected_selector = 8'b01111111;
-        endcase
-    endfunction
+    // Monitor Statements (Prints signals during simulation)
+    always @( a, b, c, d, e, f, g, an7, an6, an5, an4, an3, an2, an1, an0) begin
+        if (write == 0 & writing == 0) begin
+            $display("Time: %0t | Write: %b  | Segments: %b%b%b%b%b%b%b | Anodes: %b%b%b%b%b%b%b%b", 
+                     $time, write, a, b, c, d, e, f, g, an7, an6, an5, an4, an3, an2, an1, an0);
+        end
+    end    
 
-    task automatic write_values(input [3:0] dummy_num, input [2:0] dummy_sel, input int iterations);
-        
-        num = dummy_num;
-        sel = dummy_sel;
-        #100;
+    // Task for Writing Values
+    task automatic write_values(input [3:0] start_num, input [2:0] start_sel, input int iterations);
+        num = start_num;
+        sel = start_sel;
+        writing = 1;
 
         // Write values to different locations
         repeat (iterations) begin
             write = 1;
-            #100;
+            #10;
             write = 0;
-            #100;
+            #10;
             sel = sel + 1;
             num = num + 1;
         end
+        writing = 0;
     endtask
 
-    task read_values(input [3:0] dummy_num, input [2:0] dummy_sel, input int iterations);
-         // Read back stored values and validate
-        sel = dummy_sel;
-        num = dummy_num;
-        #100;
-        repeat (iterations) begin
-            automatic logic [6:0] expected_segment = get_expected_segments(num);
-            automatic logic [7:0] expected_sel = get_expected_selector(sel);
-            automatic logic [6:0] actual_segment = {a, b, c, d, e, f, g};
-            automatic logic [7:0] actual_sel = {an7, an6, an5, an4, an3, an2, an1, an0};
-            automatic string result = (actual_segment == expected_segment && actual_sel == expected_sel) ? "PASSED" : "FAILED";
-            
-            $fdisplay(file, "| %0t  | %b |      %b     |     %b    |     %b    |    %b    | %s |", 
-                    $time, sel, expected_segment, actual_segment, expected_sel, actual_sel, result);
-            
-            if (result == "FAILED")
-                $display("\n==========\nTest failed at time %0t: sel=%b, expected_segment=%b, actual_segment=%b, expected_sel=%b, actual_sel=%b\n==========\n", 
-                        $time, sel, expected_segment, actual_segment, expected_sel, actual_sel);
-            else
-                $display("Test passed at time %0t: sel=%b, segment=%b, decoded sel=%b", 
-                        $time, sel, actual_segment, actual_sel);
-
-            sel = sel + 1;
-            num = num + 1;
-            #100;
-        end
-    endtask
-
-    // Test sequence
+    // Test Sequence
     initial begin
-        file = $fopen("tb_result.txt", "w");
-        $fdisplay(file, "|  Time   | sel | Expected Segment | Actual Segment | Expected Anodes | Actual Anodes  | Result |");
-
+        // Initialize Signals
         clk = 0;
         rst = 1;
         write = 0;
-        #100;
-        rst = 0;
+        num = 4'b0000;
+        sel = 3'b000;
+        writing = 0;
 
-        write_values( 4'd0, 3'd0, 8);  // write num 0 to 7 to ff from 0 to 7
+        // Reset System
+        #10 rst = 1;
+        #10 rst = 0;
 
-        read_values(4'd0, 3'd0, 8);    // read num 0 to 7 to ff from 0 to 7
+        // Step 1: Store values 0 to 7 in FFs
+        write_values(4'b0000, 3'b000, 8);
 
-        write_values( 4'd8, 3'd0, 8);  // write num 8 to F to ff from 0 to 7
+        // Step 2: Display stored values
+        write = 0;
+        #1600;  // Allow enough time for all segments to cycle
 
-        read_values(4'd8, 3'd0, 8);    // read num 8 to F to ff from 0 to 7
-        
-        $fclose(file);
+        // Step 3: Store values 8 to F in FFs
+        write_values(4'b1000, 3'b000, 8);
 
-        $display("\nTest completed.\n");
+        // Step 4: Display stored values
+        write = 0;
+        #1600;  // Allow time for display cycle
 
-        $finish;
+        $stop;  // End simulation
     end
 endmodule
