@@ -65,8 +65,8 @@ module lab7 (
     // mux2x1 mux2x1_inst2 (.a(selected_num), .b(num), .w(write), .o(num_sig_out)); 
     assign num_sig_out = write ? num : selected_num;
     
-    // Only display stored values when write = 0
-    assign displayed_num = write ? 4'b1111 : num_sig_out;
+    // // Only display stored values when write = 0
+    // assign displayed_num = write ? num : num_sig_out;
     
     // Convert displayed 4-bit value to 7-segment output
     num num_decoder (
